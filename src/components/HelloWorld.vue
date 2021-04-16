@@ -1,58 +1,88 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable vue/require-v-for-key */
+/* eslint-disable vue/require-v-for-key */
+/* eslint-disable vue/require-v-for-key */
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <v-container>
+    <v-app>
+     <v-card>
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="breeds"
+      :items-per-page="95"
+      :search="search"
+      class="elevation-1"
+    ></v-data-table>
+     </v-card>
+    </v-app>
+  </v-container>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+import DogApiService from "@/services/DogApiService.js";
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+
+  export default {
+    name: 'HelloWorld',
+
+    data: () => ({
+      search: '',
+      breedAux: [],
+      breeds: [],
+      headers: [
+        {
+          text: "Raça",
+          align: 'start',
+          value: 'raça'
+        },
+        {
+          text: "Sub-raças",
+          align: 'center',
+          value: 'sub-raça'
+        }
+      ]
+    }),
+
+    created: function() {
+        this.listAllBreeds();
+    },
+
+    methods: {
+      listAllBreeds: function () {
+        var self = this;
+        //let breedAux;
+        DogApiService.listAll()
+        .then(response => {
+          console.log(response.data.message);
+          self.breedAux = response.data.message;
+          for (var key in self.breedAux) {
+            // eslint-disable-next-line no-prototype-builtins
+            if (self.breedAux.hasOwnProperty(key)) {
+              var key1 = key.charAt(0).toUpperCase() + key.slice(1);
+              var valueKey = self.breedAux[key];
+              var object = {"raça" : key1, "sub-raça": valueKey};
+              self.breeds.push(object);
+              // self.breeds.push(key, self.breedAux[key]);
+              //console.log(key + " -> " + self.breedAux[key]);
+            }
+          }
+        console.log(self.breeds);
+        })
+        .catch(e => {
+          console.log(e);
+        })
+
+      }
+
+    }
+  }
+</script>
