@@ -1,24 +1,14 @@
 # dog-list
 
-## Project setup
+## Como baixar as depêndencias do projeto?
 ```
+Basta abrir a pasta onde você instalou o projeto e rodar o comando 
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Como rodar o projeto?
 ```
+Basta abrir a pasta onde você instalou o projeto e rodar o comando 
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
