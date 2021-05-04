@@ -7,24 +7,23 @@
             v-model="search"
             append-icon="mdi-magnify"
             label="Procurar"
+            color="deep-purple"
             single-line
             hide-details
           ></v-text-field>
         </v-card-title>
         <v-data-table
-          show-select
+          v-model="selected"
           :headers="headers"
           :items="breeds"
-          :items-per-page="10"
           :search="search"
           :loading="onLoading"
-          item-key="raça"
-          v-model="selected"
-          loading-text="Carregando... Por favor aguarde."
           :footer-props="footerProps"
+          loading-text="Carregando... Por favor aguarde."
+          show-select
+          item-key="raça"
           class="elevation-1"
-        >
-        
+        >     
         </v-data-table>
       </v-card>
     </v-app>
@@ -35,7 +34,7 @@
 import DogApiService from "@/services/DogApiService.js";
 
 export default {
-  name: "HelloWorld",
+  name: "Main",
 
   data: () => ({
     search: "",
@@ -54,7 +53,7 @@ export default {
         value: "sub-raça",
       },
     ],
-    footerProps: { 'items-per-page-options': [15], 'items-per-page-text': "" },
+    footerProps: { "items-per-page-options": [15], "items-per-page-text": "" },
     onLoading: true,
   }),
 
@@ -63,8 +62,8 @@ export default {
   },
   watch: {
     selected: function () {
-      this.$store.commit('updateFavoriteDogs', this.selected);
-    }
+      this.$store.commit("updateFavoriteDogs", this.selected);
+    },
   },
 
   methods: {
@@ -78,8 +77,14 @@ export default {
             // eslint-disable-next-line no-prototype-builtins
             if (self.breedAux.hasOwnProperty(key)) {
               var formatBreed = key.charAt(0).toUpperCase() + key.slice(1);
-              var subBreed = self.breedAux[key];
-              self.breeds.push({ raça: formatBreed, "sub-raça": subBreed });
+              var formatSubBreed = self.breedAux[key].map(
+                (item) =>
+                  item.charAt(0).toUpperCase() + item.substr(1).toLowerCase()
+              );
+              self.breeds.push({
+                raça: formatBreed,
+                "sub-raça": formatSubBreed,
+              });
             }
           }
           self.onLoading = false;
@@ -87,10 +92,19 @@ export default {
         .catch((e) => {
           console.log(e);
         });
+        self.selected= self.$store.state.favoriteDogs;
     },
   },
 };
 </script>
-
-<style scoped>
+<style lang="scss">
+.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+  font-size: 18px !important;
+}
+.theme--light.v-icon {
+  color: #6200ea!important;
+}
+.v-input--selection-controls__ripple.green--text {
+   color: #6200ea!important;
+}
 </style>

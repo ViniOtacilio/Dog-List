@@ -13,7 +13,7 @@ const store = new Vuex.Store({
       },
     mutations: {
       updateFavoriteDogs (state, dog) {
-          state.favoriteDogs.push(dog);
+          state.favoriteDogs = dog;
         }
       }
 });
